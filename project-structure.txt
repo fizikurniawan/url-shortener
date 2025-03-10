@@ -1,0 +1,24 @@
+url-shortener/
+├── cmd/
+│   └── main.go
+├── internal/
+│   ├── config/
+│   │   └── config.go
+│   ├── handler/
+│   │   └── url_handler.go
+│   ├── middleware/
+│   │   └── auth.go
+│   ├── model/
+│   │   └── url.go
+│   ├── repository/
+│   │   └── url_repository.go
+│   └── service/
+│       └── url_service.go
+├── static/
+│   └── css/
+│       └── style.css
+└── templates/
+    ├── layout.html
+    ├── index.html
+    ├── login.html
+    └── dashboard.html

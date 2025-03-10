@@ -1,0 +1,101 @@
+{{define "index_content"}}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-2xl font-bold mb-2 text-center">URL Shortener</h1>
+        
+        {{if .User}}
+        <p class="text-center text-gray-600 mb-6">Welcome back, {{.User.Username}}!</p>
+        {{else}}
+        <p class="text-center text-gray-600 mb-6">Create your shortened URL instantly</p>
+        {{end}}
+        
+        {{if .Error}}
+        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {{.Error}}
+        </div>
+        {{end}}
+
+        <form method="POST" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
+                    Paste your long URL
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                       id="url" 
+                       name="url" 
+                       type="url" 
+                       required 
+                       placeholder="https://example.com/your-very-long-url">
+            </div>
+
+            {{if .User}}
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="custom_code">
+                    Custom short URL (optional)
+                </label>
+                <div class="flex items-center">
+                    <span class="text-gray-600 mr-2">{{.BaseURL}}/</span>
+                    <input class="shadow appearance-none border rounded flex-1 py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           id="custom_code" 
+                           name="custom_code" 
+                           type="text" 
+                           placeholder="custom-name">
+                </div>
+                <p class="mt-1 text-sm text-gray-500">Leave empty for random short URL</p>
+            </div>
+            {{end}}
+
+            <div class="flex justify-center pt-4">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg focus:outline-none focus:shadow-outline"
+                        type="submit">
+                    Shorten URL
+                </button>
+            </div>
+        </form>
+
+        {{if .Data.URL}}
+        <div class="mt-8 p-6 bg-green-50 border border-green-200 rounded-lg">
+            <h2 class="text-lg font-semibold text-green-700 mb-4">Your shortened URL is ready!</h2>
+            
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <input type="text" 
+                           value="{{.BaseURL}}/{{.Data.URL.ShortCode}}" 
+                           class="flex-1 p-3 border rounded-lg bg-white font-medium"
+                           readonly
+                           id="shortUrl">
+                    <button onclick="copyToClipboard()" 
+                            class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">
+                        Copy
+                    </button>
+                </div>
+
+                <div class="text-sm text-gray-600">
+                    <p>Original URL: <a href="{{.Data.URL.LongURL}}" class="text-blue-600 hover:underline break-all" target="_blank">{{.Data.URL.LongURL}}</a></p>
+                </div>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const copyText = document.getElementById("shortUrl");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value)
+        .then(() => {
+            const button = copyText.nextElementSibling;
+            button.textContent = "Copied!";
+            setTimeout(() => {
+                button.textContent = "Copy";
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Failed to copy: ', err);
+            alert('Failed to copy URL');
+        });
+}
+</script>
+{{end}}

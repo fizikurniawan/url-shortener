@@ -1,0 +1,20 @@
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE urls (
+    id BIGSERIAL PRIMARY KEY,
+    long_url TEXT NOT NULL,
+    short_code VARCHAR(10) NOT NULL UNIQUE,
+    user_id BIGINT REFERENCES users(id),
+    visits BIGINT DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
+);
+
+CREATE INDEX idx_urls_short_code ON urls(short_code);
+CREATE INDEX idx_urls_user_id ON urls(user_id);

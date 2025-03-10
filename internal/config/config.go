@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gorilla/sessions"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	_ "modernc.org/sqlite" // Import SQLite driver
 )
@@ -35,6 +36,12 @@ type Config struct {
 }
 
 func NewConfig() *Config {
+	// Load environment variables from .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file")
+	}
+
 	// Setup environment
 	env := &Environment{
 		ServerPort:  getEnvOrDefault("PORT", "8080"),
@@ -46,7 +53,6 @@ func NewConfig() *Config {
 	// Database connection (dinamis antara PostgreSQL atau SQLite)
 	dbURL := getEnvOrDefault("DATABASE_URL", "sqlite://url_shortener.db")
 	var db *sql.DB
-	var err error
 
 	if strings.HasPrefix(dbURL, "postgres://") {
 		db, err = sql.Open("postgres", dbURL)
